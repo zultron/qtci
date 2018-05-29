@@ -1,14 +1,18 @@
-#!/bin/sh
-#QT_VERSION=5.10.0
+#!/bin/bash -xe
+QT_VERSION_LATEST=5.10.1
 
-QT_VERSION=$1
-echo Downloading Qt
-wget  -c  https://download.qt.io/archive/qt/$(echo $1 |cut -d "." -f-2)/${QT_VERSION}/qt-opensource-linux-x64-${QT_VERSION}.run
+PATH="$(readlink -f $(dirname $0)/../bin):$PATH"
+
+QT_VERSION=${1:-$QT_VERSION_LATEST}
+
+echo Downloading Qt $QT_VERSION
+
+BASE_URL=https://download.qt.io/archive/qt/${QT_VERSION%.*}/${QT_VERSION}
+wget -c --progress=dot:giga $BASE_URL/qt-opensource-linux-x64-${QT_VERSION}.run
 INSTALLER=qt-opensource-linux-x64-${QT_VERSION}.run
 ENVFILE=qt-${QT_VERSION}.env
+
 echo Installing Qt
-
-
 extract-qt-installer $PWD/$INSTALLER $PWD/Qt
 
 echo Create $ENVFILE
